@@ -1,0 +1,69 @@
+/************************************************************
+ofxAssimpModelLoader
+************************************************************/
+■ofxAssimpModelLoader manual
+http://openframeworks.cc/documentation/ofxAssimpModelLoader/ofxAssimpModelLoader.html
+	
+■maxで複数のAnimation定義をし、これをopenframework側で使い分ける。
+keyword
+	ofxAssimpModelLoader
+	
+	ofxAssimpAnimation
+		http://openframeworks.cc/documentation/ofxAssimpModelLoader/ofxAssimpAnimation/
+	
+	ofxAssimpAnimationでofxAssimpModelLoaderのAnimation定義をpointer越しにもらい、
+	これに対して作業を行うことで、複数のAnimationを使い分けることが可能となった。
+	
+	★maxからの書き出し:下記 参照
+		\data\3ds max output setting(panda)-01.png
+
+■convert:3ds max to .x file (checked on Windows)
+panda
+	http://www.andytather.co.uk/Panda/directxmax_downloads.aspx
+		I have installed
+			Visual C++ 2005 Redistributable Package (x86) 32 bit
+		
+		and then downloaded the file of
+			Panda Directx Exporter x86 (5.8.66.0) for 3DS Max 8 (32 bit)
+			
+		You can see this plugin at "書き出し" menu.
+		
+■️making 3ds max model
+need "UVW mapping" when using texture image(png etc).
+	size:全体を覆っていないと、oFに持ってきた時に暗くなった.
+
+足など、パーツが欠けた
+	max上で、keyを打ち直してみたら直った。
+
+material
+	外部ファイルを参照するタイプのtextureの場合、この画像ファイルもdata dir内に持っておくこと。
+	pandaで書き出しすると、自動的に吐き出されるので、これを一緒に保存しておけばOK.
+	
+	material editorで作成したmaterialでも、もちろんOK.
+	ただし、この場合は、oF側で、きちんとLightを配置すること.
+	そんなに面倒でないので、"SJ-magic/study__ofLight"を参考に作成すること。
+	point lightが、設定が少なくて使い易い。
+	
+		
+★3ds maxの取り込み
+手順
+	pandaで書き出し
+	
+
+座標:max->openframeworks
+	実験的に、以下の通りとなった。
+		no cam
+			ofScale(-1, 1, 1);
+			
+		cam
+			ofScale(-1, -1, 1);
+			
+
+■ofCamera(not easy cam)
+lookAt()の使い方に注意
+	param1:	target position
+	param2:	カメラ位置からターゲットに向かうベクトルを法線に持つ平面上に対して
+			param2のベクトルから垂線を下した交点に向かう方向を上向きベクトルに持つカメラの方向
+
+
+
