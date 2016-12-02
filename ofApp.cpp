@@ -259,6 +259,10 @@ void ofApp::keyPressed(int key){
 			
 			break;
 			
+		case ' ':
+			ofSaveScreen("screen.png");
+			break;
+			
 	}
 }
 
