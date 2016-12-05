@@ -12,6 +12,7 @@ ofApp::ofApp(int _id_Animation)
 : id_Animation(_id_Animation)
 , b_cam(false)
 , b_DispLight(false)
+, DrawType(DRAW_TYPE__FACE)
 {
 }
 
@@ -37,7 +38,9 @@ void ofApp::setup(){
 	/********************
 	********************/
 	// model.loadModel("teapot.x");
-	model.loadModel("biped.x");
+	// model.loadModel("biped.x");
+	model.loadModel("Bone_x_Model.x");
+	
 	/*
 	// この方法だと、.xに2つ以上Animation定義があっても、常に最後のAnimation再生となってしまった。
 	model.playAllAnimations();
@@ -137,7 +140,15 @@ void ofApp::apply_gui_parameter()
 	PointLight.setAttenuation(point_attenuation_constant, point_attenuation_linear, point_attenuation_quadratic);
 }
 
-//--------------------------------------------------------------
+/******************************
+座標:max->openframeworks
+	実験的に、以下の通りとなった。
+		no cam
+			ofScale(-1, 1, 1);
+			
+		cam
+			ofScale(-1, -1, 1);
+******************************/
 void ofApp::draw(){
 	/********************
 	********************/
@@ -160,6 +171,7 @@ void ofApp::draw(){
 		camera.setTarget(cam_Target);
 			camera.begin();
 			の前に入れるか、後に入れるか、で、姿勢の修正が入るか否か、が変わるので上手く使い分けること.
+			...姿勢の修正 : z方向が、常に真上になるように"クッ"と修正された。
 		********************/
 		camera.setTarget(cam_Target); // 座標だけ変更
 		camera.begin();
@@ -173,23 +185,36 @@ void ofApp::draw(){
 			camera.begin();
 			の前でofScale()しても、
 			camera.begin();によって、対象となる座標系がカメラの それとなるので、無効(のように見える)。
+			
+			正の方向
+				x:左
+				y:下
+				z:手前
 			********************/
 			ofScale(-1, -1, 1);
 			
 			model.setPosition(0, 0, 0);
 			
 			/********************
-			drawFaces()以外にしても、全て、drawFaces()と同じ描画であった。
-			textureあると、ダメなのかな？
+			ofxAssimpModelLoaderに
+				drawVertices();
+				drawWireframe();
+			が効かないバグがあったので、of_v0.9.3_osx_release
+			に置き換えた。
 			********************/
-			/*
-			// drawの色々な種類
-			model.drawFaces();
-			model.draw(OF_MESH_FILL); //same as model.drawFaces();
-			model.draw(OF_MESH_POINTS); // same as model.drawVertices();
-			model.draw(OF_MESH_WIREFRAME); // same as model.drawWireframe();
-			*/
-			model.drawFaces();
+			switch(DrawType){
+				case DRAW_TYPE__FACE:
+					model.draw(OF_MESH_FILL); //same as model.drawFaces();
+					break;
+					
+				case DRAW_TYPE__POINTS:
+					model.draw(OF_MESH_POINTS); // same as model.drawVertices();
+					break;
+					
+				case DRAW_TYPE__WIREFRAME:
+					model.draw(OF_MESH_WIREFRAME); // same as model.drawWireframe();
+					break;
+			}
 			
 			PointLight.disable();
 			ofDisableLighting();
@@ -211,17 +236,26 @@ void ofApp::draw(){
 			model.setPosition(0, 0, 0);
 			
 			/********************
-			drawFaces()以外にしても、全て、drawFaces()と同じ描画であった。
-			textureあると、ダメなのかな？
+			ofxAssimpModelLoaderに
+				drawVertices();
+				drawWireframe();
+			が効かないバグがあったので、of_v0.9.3_osx_release
+			に置き換えた。
 			********************/
-			/*
-			// drawの色々な種類
-			model.drawFaces();
-			model.draw(OF_MESH_FILL); //same as model.drawFaces();
-			model.draw(OF_MESH_POINTS); // same as model.drawVertices();
-			model.draw(OF_MESH_WIREFRAME); // same as model.drawWireframe();
-			*/
-			model.drawFaces();
+			switch(DrawType){
+				case DRAW_TYPE__FACE:
+					model.draw(OF_MESH_FILL); //same as model.drawFaces();
+					break;
+					
+				case DRAW_TYPE__POINTS:
+					model.draw(OF_MESH_POINTS); // same as model.drawVertices();
+					break;
+					
+				case DRAW_TYPE__WIREFRAME:
+					model.draw(OF_MESH_WIREFRAME); // same as model.drawWireframe();
+					break;
+			}
+			
 		ofPopMatrix();
 	}
 	
@@ -257,6 +291,18 @@ void ofApp::keyPressed(int key){
 			if(b_cam)	printf("cam\n");
 			else		printf("no cam\n");
 			
+			break;
+			
+		case 'f':
+			DrawType = DRAW_TYPE__FACE;
+			break;
+			
+		case 'p':
+			DrawType = DRAW_TYPE__POINTS;
+			break;
+			
+		case 'w':
+			DrawType = DRAW_TYPE__WIREFRAME;
 			break;
 			
 		case ' ':

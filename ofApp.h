@@ -18,12 +18,18 @@ private:
 		WIDTH = 1280,
 		HEIGHT = 720,
 	};
+	enum DRAW_TYPE{
+		DRAW_TYPE__FACE,
+		DRAW_TYPE__POINTS,
+		DRAW_TYPE__WIREFRAME,
+	};
 	
 	/****************************************
 	****************************************/
 	/********************
 	********************/
 	int id_Animation;
+	DRAW_TYPE DrawType;
 	
 	ofxAssimpModelLoader model;
 	ofxAssimpAnimation *modelAnimation;

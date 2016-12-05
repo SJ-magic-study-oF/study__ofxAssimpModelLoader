@@ -44,6 +44,10 @@ material
 	そんなに面倒でないので、"SJ-magic/study__ofLight"を参考に作成すること。
 	point lightが、設定が少なくて使い易い。
 	
+Biped x modeling : OK
+	Bipedをmax上で非表示にし、pandaでoutputすれば、そのまま使用できた。
+	
+	
 		
 ★3ds maxの取り込み
 手順
