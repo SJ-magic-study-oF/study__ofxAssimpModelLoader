@@ -15,6 +15,9 @@ private:
 	/****************************************
 	****************************************/
 	enum{
+		BUF_SIZE = 512,
+	};
+	enum{
 		WIDTH = 1280,
 		HEIGHT = 720,
 	};
@@ -67,6 +70,7 @@ private:
 	****************************************/
 	void setup_gui();
 	void apply_gui_parameter();
+	void check_if_FileExist(char* FileName);
 	
 	
 public:

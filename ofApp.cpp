@@ -37,20 +37,31 @@ void ofApp::setup(){
 	
 	/********************
 	********************/
-	// model.loadModel("teapot.x");
-	// model.loadModel("biped.x");
-	model.loadModel("Bone_x_Model.x");
+	char FileName[BUF_SIZE];
+	sprintf(FileName, "../../../data/teapot_x2.x"); // 2 meshes. 2 Animatin ranges.
+	// sprintf(FileName, "../../../data/biped.x");
+	// sprintf(FileName, "../../../data/Bone_x_Model.x");
+	
+	check_if_FileExist(FileName); // loadModel(); の戻り値では、判断できていなかったので、個別にcheck.
+	
+	model.loadModel(FileName);
 	
 	/*
 	// この方法だと、.xに2つ以上Animation定義があっても、常に最後のAnimation再生となってしまった。
 	model.playAllAnimations();
 	model.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
 	*/
-
-	// Animation部分をpointer経由で受け取り、これに対して作業を行うことで、複数のAnimation定義を使い分けることが可能.
-	if(model.getAnimationCount() <= id_Animation) id_Animation = model.getAnimationCount() - 1;
+	
+	/*
+		model.getAnimationCount();
+			return is -> model.getNumMeshes() * NumAnimations
+	*/
+	const int NUM_ANIMATIONS = model.getAnimationCount() / model.getNumMeshes();
+	printf("Num Meshes = %d, Num Animations = %d, NUM_ANIMATIONS = %d\n", model.getNumMeshes(), model.getAnimationCount(), NUM_ANIMATIONS);
+	
+	if(NUM_ANIMATIONS <= id_Animation) id_Animation = NUM_ANIMATIONS - 1;
 	model.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
-	modelAnimation = &model.getAnimation(id_Animation);
+	modelAnimation = &model.getAnimation(id_Animation); // Animation部分をpointer経由で受け取り、これに対して作業を行うことで、複数のAnimation定義を使い分けることが可能.
 	modelAnimation->play();
 	
 	/********************
@@ -65,6 +76,18 @@ void ofApp::setup(){
 	setup_gui();
 	
 	PointLight.setPointLight();
+}
+
+/******************************
+******************************/
+void ofApp::check_if_FileExist(char* FileName)
+{
+	FILE* fp;
+	fp = fopen(FileName, "rb");
+	if(fp == NULL){
+		printf("File not exist\n");
+		std::exit(1);
+	}
 }
 
 /******************************
@@ -152,6 +175,10 @@ void ofApp::apply_gui_parameter()
 void ofApp::draw(){
 	/********************
 	********************/
+	ofPushStyle();
+	
+	/********************
+	********************/
 	ofBackground(0);
 	ofSetColor(255, 255, 255, 255);
 	
@@ -162,7 +189,6 @@ void ofApp::draw(){
 	/********************
 	********************/
 	ofEnableDepthTest();
-	ofPushStyle();
 	
 	apply_gui_parameter();
 	
@@ -259,8 +285,9 @@ void ofApp::draw(){
 		ofPopMatrix();
 	}
 	
-	ofPopStyle();
 	ofDisableDepthTest();
+	
+	ofPopStyle();
 	
 	gui.draw();
 }
