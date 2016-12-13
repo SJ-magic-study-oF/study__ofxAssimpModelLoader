@@ -12,6 +12,7 @@ CG::CG()
 , DrawType(DRAW_TYPE__FACE)
 , b_DispGui(true)
 , b_cam_orbit(false)
+, b_paused(false)
 {
 }
 
@@ -364,8 +365,30 @@ void CG::keyPressed(int key)
 			DrawType = DRAW_TYPE__POINTS;
 			break;
 			
+		case 's':
+			modelAnimation->play(); // start from Top frame.
+			break;
+			
+		case 't':
+			modelAnimation->stop();
+			break;
+			
+		case 'u':
+			b_paused = !b_paused;
+			modelAnimation->setPaused(b_paused);
+			break;
+			
+			
 		case 'w':
 			DrawType = DRAW_TYPE__WIREFRAME;
+			break;
+			
+		case ' ':
+		{
+			ofImage image;
+			image.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+			image.saveImage("screen.png");
+		}
 			break;
 	}
 	

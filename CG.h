@@ -33,6 +33,7 @@ private:
 	
 	ofxAssimpModelLoader model;
 	ofxAssimpAnimation *modelAnimation;
+	bool b_paused;
 	
 	ofEasyCam camera;
 	bool b_cam_orbit;
