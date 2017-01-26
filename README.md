@@ -23,13 +23,6 @@ materialを反映させるためには、ofLightを使う(see also SJ-magic/stud
 ##note
 
 ##3ds max File作成の注意点
-同一textureを反映可能なmeshに上限があるよう(25個とか、そのくらい)。  
-この上限を超えると、textureの当たったobjectが見えなくなる。  
-textureは、色 or 質感 など、何でもいいので、値が1でも違えばOK。  
-異なる名前であっても、全く同じ設定値だとNG。  
-
-max上で、異なるLayerにobjectを置くことは、問題なかった。  
-
-
+ofxAssimpModelLoader.txtを参照のこと.  
 
 

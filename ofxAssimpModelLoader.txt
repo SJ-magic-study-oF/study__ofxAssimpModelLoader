@@ -14,7 +14,7 @@ keyword
 	ofxAssimpAnimationでofxAssimpModelLoaderのAnimation定義をpointer越しにもらい、
 	これに対して作業を行うことで、複数のAnimationを使い分けることが可能となった。
 	
-	★maxからの書き出し:下記 参照
+	★maxからの書き出し:panda使用:書き出し設定は下記 参照
 		\data\3ds max output setting(panda)-01.png
 
 ■convert:3ds max to .x file (checked on Windows)
@@ -29,14 +29,20 @@ panda
 		You can see this plugin at "書き出し" menu.
 		
 ■️making 3ds max model
+モディファイア
+	例えば"メッシュスムーズ"は無効化されてしまった。
+	
+	対応としては、
+		modeling
+		編集可能ポリゴンに変換
+	としてからBipedにPhysiqueでリンクさせる。
+	とすればOK.
+
 need "UVW mapping" when using texture image(png etc).
 	size:全体を覆っていないと、oFに持ってきた時に暗くなった.
 
-足など、パーツが欠けた
-	max上で、keyを打ち直してみたら直った。
-
-material
-	外部ファイルを参照するタイプのtextureの場合、この画像ファイルもdata dir内に持っておくこと。
+texture
+	外部ファイルを参照するタイプ(texture)の場合、この画像ファイルもdata dir内に持っておくこと。
 	pandaで書き出しすると、自動的に吐き出されるので、これを一緒に保存しておけばOK.
 	
 	material editorで作成したmaterialでも、もちろんOK.
@@ -44,17 +50,34 @@ material
 	そんなに面倒でないので、"SJ-magic/study__ofLight"を参考に作成すること。
 	point lightが、設定が少なくて使い易い。
 	
-Biped x modeling : OK
-	Bipedをmax上で非表示にし、pandaでoutputすれば、そのまま使用できた。
-	
-	
-		
-★3ds maxの取り込み
-手順
-	pandaで書き出し
-	
+material
+	同一materialを反映可能なmesh数に上限があるよう(25個とか、そのくらい)。  
+	この上限を超えると、materialの当たったobjectが見えなくなる。  
+	materialは、色 or 質感 など、何でもいいので、値が1でも違えばOK。  
+	異なる名前であっても、全く同じ設定値だとNG。  
 
-座標:max->openframeworks
+Biped.x
+	BipedにAnimation付けし、これをそのまま表示することにtryした。
+	普通に動作OK.
+
+Biped_x_Model(physique).x
+	modeling data(2つの異なるobject)とBipedをphysiqueでリンクし、Biped Animtionをつけたケース。
+	
+	★注意点★
+		「physique」でリンクさせる場合、
+		modeling dataは、基点をBipedのFootsteps(Defaultで非表示)に位置合わせする必要があった。
+		otherwise:modeling dataがProgram側でoffsetして表示される。
+		複数Objectに分かれている場合は、それぞれ。
+		
+		位置コンストレイントでBipedにリンクさせる場合は、基底ポジションはそのままでOK.
+		
+	確認したOK事項
+	・	Bipedを非表示にしてもOK.
+		Animationはついてくるし、非表示も有効
+	・	Objectは別LayerでもOK
+	・	Objectは別Objectのまま、それぞれPhysique設定してもOK
+		
+■座標:max->openframeworks
 	実験的に、以下の通りとなった。
 		no cam
 			ofScale(-1, 1, 1);
@@ -63,7 +86,7 @@ Biped x modeling : OK
 			ofScale(-1, -1, 1);
 			
 
-■ofCamera(not easy cam)
+■ofCamera(not easy cam...sample sourceでは未使用)
 lookAt()の使い方に注意
 	param1:	target position
 	param2:	カメラ位置からターゲットに向かうベクトルを法線に持つ平面上に対して

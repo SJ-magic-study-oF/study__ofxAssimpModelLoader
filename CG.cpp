@@ -33,9 +33,8 @@ void CG::setup(){
 	/********************
 	********************/
 	char FileName[BUF_SIZE];
-	// sprintf(FileName, "../../../data/3dC/teapot.x");
-	sprintf(FileName, "../../../data/3dCg/biped.x");
-	// sprintf(FileName, "../../../data/3dCg/Bone_x_Model.x");
+	// sprintf(FileName, "../../../data/3dCg/Biped.X");
+	sprintf(FileName, "../../../data/3dCg/Biped_x_Model(physique).x");
 	
 	check_if_FileExist(FileName);
 	model.loadModel(FileName);
@@ -55,6 +54,16 @@ void CG::setup(){
 	printf("> 3D CG\n");
 	printf("Num Meshes = %d, Num Animations = %d, NUM_ANIMATIONS = %d\n", model.getNumMeshes(), model.getAnimationCount(), NUM_ANIMATIONS);
 	id_Animation = 0;
+	/********************
+	enum ofLoopType{
+		/// \brief Plays the video once without looping.
+		OF_LOOP_NONE=0x01,
+		/// \brief Plays the video forwards then backwards repeatedly.
+		OF_LOOP_PALINDROME=0x02,
+		/// \brief Repeats the video over and over.
+		OF_LOOP_NORMAL=0x03
+	};
+	********************/
 	model.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
 	modelAnimation = &model.getAnimation(id_Animation); // Animation部分をpointer経由で受け取り、これに対して作業を行うことで、複数のAnimation定義を使い分けることが可能.
 	modelAnimation->play();
@@ -87,6 +96,8 @@ void CG::check_if_FileExist(char* FileName)
 	if(fp == NULL){
 		ERROR_MSG();
 		ofExit();
+	}else{
+		fclose(fp);
 	}
 }
 
@@ -167,7 +178,22 @@ void CG::update(){
 ******************************/
 void CG::apply_gui_parameter()
 {
+	/********************
 	PointLight.setPosition(point_position);
+		挿入位置によらず、
+			PointLight.enable();
+		によってLightが有効な状態で描画される空間座標上における位置をset.
+		cam空間であれば、正の方向は
+			x:右
+			y:上
+			z:手前
+		ここでは、cam空間でさらに、ofScale(-1, -1, 1);されているので
+			x:左
+			y:下
+			z:手前
+	********************/
+	PointLight.setPosition(point_position);
+	
 	PointLight.setDiffuseColor(ofColor(pointColor_diffuse));
 	PointLight.setSpecularColor(ofColor(pointColor_specular));
 	PointLight.setAttenuation(point_attenuation_constant, point_attenuation_linear, point_attenuation_quadratic);
@@ -230,21 +256,20 @@ void CG::draw(double Cg_a){
 		
 		/********************
 		camera.setTarget(cam_Target);
-			挿入位置は、cam.begin()の前.
-			camera.setTarget();
-			で示すpositionは、world座標系。
+			挿入位置によらず、cam座標空間でTarget位置を指定。
 			つまり、正の方向は、
 				x:右
 				y:上
 				z:手前
+			
 			また、camera内の映像オブジェクトの動きについて、targetを左にズラすと、オブジェクトは右にズレる点に注意。
 			
 			camera.orbit();
-			の後に明示的に記述すること。
+			の後に記述しないと、この関数でTargetが原点に戻されてしまうようだ。
 		********************/
 		if(b_cam_orbit)	cam_orbit_motion();
 		
-		camera.setTarget(cam_Target); // 座標だけ変更
+		camera.setTarget(cam_Target);
 		camera.begin();
 		
 		ofPushMatrix();
