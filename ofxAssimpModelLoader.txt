@@ -51,10 +51,16 @@ texture
 	point lightが、設定が少なくて使い易い。
 	
 material
-	同一materialを反映可能なmesh数に上限があるよう(25個とか、そのくらい)。  
-	この上限を超えると、materialの当たったobjectが見えなくなる。  
-	materialは、色 or 質感 など、何でもいいので、値が1でも違えばOK。  
-	異なる名前であっても、全く同じ設定値だとNG。  
+	Object形状 & それに適用されたmaterial
+	が双方とも同じ場合、一つを残して他のObjectが消えてしまう。
+	Object形状は、反転、回転などされてもダメ。
+	materialは、何でもいいので、値が1でも異なればOK.
+	異なる名前であっても、値が同じだとNG.
+	
+	例えば、Bipedの場合、
+		左右に異なるmaterialを貼る。
+		背骨の下二つ(背骨リンク:4つの場合)は同じ形状なので、materialを分ける。
+	とすればOK.
 
 Biped.x
 	BipedにAnimation付けし、これをそのまま表示することにtryした。

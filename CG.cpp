@@ -34,7 +34,8 @@ void CG::setup(){
 	********************/
 	char FileName[BUF_SIZE];
 	// sprintf(FileName, "../../../data/3dCg/Biped.X");
-	sprintf(FileName, "../../../data/3dCg/Biped_x_Model(physique).x");
+	// sprintf(FileName, "../../../data/3dCg/Biped_x_Model(physique).x");
+	sprintf(FileName, "../../../data/3dCg/test.x");
 	
 	check_if_FileExist(FileName);
 	model.loadModel(FileName);

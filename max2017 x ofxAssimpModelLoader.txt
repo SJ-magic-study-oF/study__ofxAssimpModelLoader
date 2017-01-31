@@ -1,0 +1,82 @@
+/************************************************************
+外注も考慮し、最新の2017でtest.
+************************************************************/
+■3ds max 2017
+windowsにて体験版(体験版はwindows only)をdownloadし、
+	http://www.autodesk.co.jp/products/3ds-max/free-trial#0
+	
+SP1 - 3を適用
+	https://knowledge.autodesk.com/support/3ds-max/downloads
+
+
+注意
+	UAC切らないとinstallできないことがある。
+		http://memotora.com/2015/03/12/how-to-change-uac-off-with-windows-8-1/
+		
+	proxy通ってないと、downloadが上手くできない(途中で止まってError)
+	
+	
+
+■convert:3ds max to .x file (checked on Windows)
+X Exporter : 使い勝手を知っている(8でcheck済)pandaを使いたかったがversionがなかったので.
+	http://www.cgdev.net/axe/download.php
+	
+Installation
+	Download and Extract the dle file into the plugins directory of 3ds Max. 
+	e.g.:   C:\Program Files\Autodesk\3ds Max 2017\plugins 
+	If you are encountering a runtime error when start 3ds Max you need to install Visual C++ 2015 Redistributable Packages.
+	
+	You can find this plugin at "書き出し" menu.
+		
+■️making 3ds max model
+モディファイヤ
+	physiqueは最後に積む
+	
+Bipedの書き出し
+	そのまま書き出すと、"No mesh"とされてしまった。
+	全てを選択し、編集可能ポリゴンへ変換すれば、Objectとして見える。
+	この変換をしても、Biped機能は、使える様子だった。
+	
+Layer off
+	OK
+	
+ObjectがProgram側で消えてしまう問題
+	Object形状 & それに適用されたmaterial
+	が双方とも同じ場合、一つを残して他のObjectが消えてしまう。
+	Object形状は、反転、回転などされてもダメ。
+	materialは、何でもいいので、値が1でも異なればOK.
+	異なる名前であっても、値が同じだとNG.
+	
+	例えば、Bipedの場合、
+		左右に異なるmaterialを貼る。
+		背骨の下二つ(背骨リンク:4つの場合)は同じ形状なので、materialを分ける。
+	とすればOK.
+
+Biped x physique でoffsetする問題
+	Objectの基点をBipedのFootsteps(Defaultで非表示)に位置合わせ
+	Utilityから、"Xフォームをリセット" -> "選択をリセット" ("選択をリセット"を忘れがちなので注意)
+		これをしないと、基点の元位置を覚えており、.x吐き出し、oF読み込み時に、これが使われてしまった。
+	編集可能ポリゴンへ変換
+	physiqueを適用
+	Animation
+	.x 書き出し
+
+	
+	位置コンストレイントでBipedにリンクさせる場合は、基底ポジションはそのままでOK.
+	pandaでは、XフォームをリセットせずともOKであったが、こちらでは、必須.
+		
+■座標:max->openframeworks
+	実験的に、以下の通りとなった(same as : max8 x panda)。
+		no cam
+			ofScale(-1, 1, 1);
+			
+		cam
+			ofScale(-1, -1, 1);
+			
+■Animation付け(接地key含む)されたBipedの並行移動について
+	https://knowledge.autodesk.com/ja/support/3ds-max/learn-explore/caas/CloudHelp/cloudhelp/2016/JPN/3DSMax/files/GUID-8EC8CFD0-17D0-40AB-96EF-2BF52C1A2519-htm.html
+	・全てを移動
+	・ダミーを置き、重心をこれに"選択してリンク"して移動、回転など
+	
+	
+	
